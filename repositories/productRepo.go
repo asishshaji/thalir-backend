@@ -66,3 +66,14 @@ func (pR ProductRepo) DeleteProduct(pid int) error {
 
 	return nil
 }
+
+func (pR ProductRepo) GetProduct(pid int) (interface{}, error) {
+	mp := models.NewEmptyProductCreationRequest()
+	err := pR.db.NewSelect().Model(&mp).Where("p_id = ?", pid).Scan(context.Background())
+	if err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	return mp, nil
+
+}

@@ -28,6 +28,10 @@ func main() {
 	pS := services.NewProductService(pR)
 	pC := controller.NewProductController(pS)
 
-	a := NewApp(fmt.Sprintf(":%s", serverPort), pC)
+	oR := repository.NewOrderRepository(db)
+	oS := services.NewOrderService(oR)
+	oC := controller.NewOrderController(oS)
+
+	a := NewApp(fmt.Sprintf(":%s", serverPort), pC, oC)
 	a.RunServer()
 }

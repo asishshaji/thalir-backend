@@ -5,4 +5,5 @@ type PSInterface interface {
 	GetAllProducts() (interface{}, error)
 	UpdateProduct(product interface{}) error
 	DeleteProduct(pid int) error
+	GetProduct(pid int) (interface{}, error)
 }

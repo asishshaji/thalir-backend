@@ -49,3 +49,8 @@ func (pS ProductService) DeleteProduct(pid int) error {
 
 	return nil
 }
+
+func (pS ProductService) GetProduct(pid int) (interface{}, error) {
+	return pS.pRepo.GetProduct(pid)
+
+}

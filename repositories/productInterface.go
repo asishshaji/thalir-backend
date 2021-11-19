@@ -5,4 +5,5 @@ type PRInterface interface {
 	GetAllProducts() (interface{}, error)
 	UpdateProduct(p interface{}) error
 	DeleteProduct(pid int) error
+	GetProduct(pid int) (interface{}, error)
 }
