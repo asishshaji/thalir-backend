@@ -1,6 +1,11 @@
 package repository
 
-import "github.com/uptrace/bun"
+import (
+	"context"
+
+	"github.com/asishshaji/thalir-backend/models"
+	"github.com/uptrace/bun"
+)
 
 type OrderRepository struct {
 	db *bun.DB
@@ -12,6 +17,9 @@ func NewOrderRepository(db *bun.DB) ORInterface {
 	}
 }
 
-func (oR OrderRepository) CreateProduct(o interface{}) (interface{}, error) {
-	return nil, nil
+func (oR OrderRepository) CreateProduct(o models.Order) (models.Order, error) {
+	oR.db.NewInsert().Model(&o).Exec(context.Background())
+	oR.db.NewInsert().Model(&o.OrderHistory).Exec(context.Background())
+
+	return models.Order{}, nil
 }
