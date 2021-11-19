@@ -14,6 +14,7 @@ type ProductRepo struct {
 }
 
 func NewProductRepo(db *bun.DB) PRInterface {
+
 	return ProductRepo{db: db}
 }
 

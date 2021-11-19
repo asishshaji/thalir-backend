@@ -24,6 +24,8 @@ func main() {
 
 	db := utils.ConnectToDB(dbHost, dbUsername, dbPassword, dbName, dbPort)
 
+	utils.CreateTables(db)
+
 	pR := repository.NewProductRepo(db)
 	pS := services.NewProductService(pR)
 	pC := controller.NewProductController(pS)
