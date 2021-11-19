@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/asishshaji/thalir-backend/enum"
 	"github.com/asishshaji/thalir-backend/models"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -14,14 +15,17 @@ import (
 	"github.com/uptrace/bun/extra/bundebug"
 )
 
-func CreateTables(db *bun.DB) {
+func CreateTables(db *bun.DB, mode string) {
 
 	prod := models.Product{}
 	order := models.Order{}
 	orderHistory := models.OrderHistory{}
-	db.NewDropTable().Model(&prod).Exec(context.Background())
-	db.NewDropTable().Model(&orderHistory).Exec(context.Background())
-	db.NewDropTable().Model(&order).Exec(context.Background())
+
+	if mode == enum.Development.String() {
+		db.NewDropTable().Model(&prod).Exec(context.Background())
+		db.NewDropTable().Model(&orderHistory).Exec(context.Background())
+		db.NewDropTable().Model(&order).Exec(context.Background())
+	}
 
 	db.NewCreateTable().Model(&prod).Exec(context.Background())
 	db.NewCreateTable().Model(&orderHistory).Exec(context.Background())

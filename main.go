@@ -22,9 +22,11 @@ func main() {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
 
+	envMode := os.Getenv("ENV_MODE")
+
 	db := utils.ConnectToDB(dbHost, dbUsername, dbPassword, dbName, dbPort)
 
-	utils.CreateTables(db)
+	utils.CreateTables(db, envMode)
 
 	pR := repository.NewProductRepo(db)
 	pS := services.NewProductService(pR)
