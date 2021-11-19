@@ -1,19 +1,33 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"os"
+	"strconv"
 
-	"github.com/joho/godotenv"
+	"github.com/asishshaji/thalir-backend/controller"
+	"github.com/asishshaji/thalir-backend/utils"
+
+	repository "github.com/asishshaji/thalir-backend/repositories"
+	"github.com/asishshaji/thalir-backend/services"
 )
 
-func loadEnv() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found")
-		return
-	}
-	log.Println("Loaded .env file ")
-}
-
 func main() {
-	loadEnv()
+	utils.LoadEnv()
+	serverPort := os.Getenv("SERVER_PORT")
+
+	dbHost := os.Getenv("HOST")
+	dbName := os.Getenv("DB_NAME")
+	dbUsername := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+
+	db := utils.ConnectToDB(dbHost, dbUsername, dbPassword, dbName, dbPort)
+
+	pR := repository.NewProductRepo(db)
+	pS := services.NewProductService(pR)
+	pC := controller.NewProductController(pS)
+
+	a := NewApp(fmt.Sprintf(":%s", serverPort), pC)
+	a.RunServer()
 }
