@@ -19,6 +19,8 @@ func NewApp(port string, pController controller.PCInterface) *App {
 	pG := e.Group("/product")
 	pG.POST("", pController.CreateProduct)
 	pG.GET("", pController.GetAllProducts)
+	pG.PUT("", pController.UpdateProduct)
+	pG.DELETE("/:id", pController.DeleteProduct)
 
 	return &App{
 		port: port,

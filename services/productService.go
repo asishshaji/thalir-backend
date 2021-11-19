@@ -14,13 +14,13 @@ func NewProductService(pRepo repository.PRInterface) PSInterface {
 	return ProductService{pRepo: pRepo}
 }
 
-func (pS ProductService) CreateProduct(product interface{}) error {
+func (pS ProductService) CreateProduct(product interface{}) (interface{}, error) {
 
-	err := pS.pRepo.CreateProduct(product)
+	p, err := pS.pRepo.CreateProduct(product)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return p, nil
 }
 
 func (pS ProductService) GetAllProducts() (interface{}, error) {
@@ -30,4 +30,22 @@ func (pS ProductService) GetAllProducts() (interface{}, error) {
 		return nil, err
 	}
 	return d, nil
+}
+
+func (pS ProductService) UpdateProduct(product interface{}) error {
+	err := pS.pRepo.UpdateProduct(product)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (pS ProductService) DeleteProduct(pid int) error {
+	err := pS.pRepo.DeleteProduct(pid)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

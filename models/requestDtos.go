@@ -9,6 +9,7 @@ import (
 
 type productCreationRequest struct {
 	bun.BaseModel `bun:"products"`
+	Pid           int     `json:"p_id" bun:"p_id,pk"`
 	Name          string  `json:"name"`
 	BuyPrice      float32 `json:"buy_price"`
 	SellPrice     float32 `json:"sell_price"`
@@ -34,6 +35,7 @@ func InterfaceToModel(v interface{}) productCreationRequest {
 	pVal := reflect.ValueOf(v)
 
 	return productCreationRequest{
+		Pid:       int(pVal.FieldByName("Pid").Int()),
 		Name:      pVal.FieldByName("Name").String(),
 		BuyPrice:  float32(pVal.FieldByName("BuyPrice").Float()),
 		SellPrice: float32(pVal.FieldByName("SellPrice").Float()),
