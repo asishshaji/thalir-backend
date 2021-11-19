@@ -22,7 +22,7 @@ func NewProductController(pS services.PSInterface) PCInterface {
 }
 
 func (pC productController) CreateProduct(c echo.Context) error {
-	reqProduct := models.NewEmptyProductCreationRequest()
+	reqProduct := models.NewEmptyproduct()
 
 	err := json.NewDecoder(c.Request().Body).Decode(&reqProduct)
 	if err != nil {
@@ -51,7 +51,7 @@ func (pC productController) GetAllProducts(c echo.Context) error {
 }
 
 func (pC productController) UpdateProduct(c echo.Context) error {
-	reqProduct := models.NewEmptyProductCreationRequest()
+	reqProduct := models.NewEmptyproduct()
 
 	err := json.NewDecoder(c.Request().Body).Decode(&reqProduct)
 	if err != nil {

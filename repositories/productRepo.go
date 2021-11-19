@@ -19,7 +19,7 @@ func NewProductRepo(db *bun.DB) PRInterface {
 
 func (pR ProductRepo) CreateProduct(p interface{}) (interface{}, error) {
 
-	m := models.InterfaceToModel(p)
+	m := models.InterfaceToProduct(p)
 
 	_, err := pR.db.NewInsert().Model(&m).Exec(context.Background())
 	if err != nil {
@@ -41,7 +41,7 @@ func (pR ProductRepo) GetAllProducts() (interface{}, error) {
 }
 
 func (pR ProductRepo) UpdateProduct(p interface{}) error {
-	m := models.InterfaceToModel(p)
+	m := models.InterfaceToProduct(p)
 	_, err := pR.db.NewUpdate().Model(&m).Column("name", "units", "buy_price", "sell_price", "type").Where("p_id = ?", m.Pid).Exec(context.Background())
 	if err != nil {
 		log.Fatalln(err)
@@ -68,7 +68,7 @@ func (pR ProductRepo) DeleteProduct(pid int) error {
 }
 
 func (pR ProductRepo) GetProduct(pid int) (interface{}, error) {
-	mp := models.NewEmptyProductCreationRequest()
+	mp := models.NewEmptyproduct()
 	err := pR.db.NewSelect().Model(&mp).Where("p_id = ?", pid).Scan(context.Background())
 	if err != nil {
 		log.Fatalln(err)
