@@ -19,6 +19,10 @@ func CreateTables(db *bun.DB) {
 	prod := models.Product{}
 	order := models.Order{}
 	orderHistory := models.OrderHistory{}
+	db.NewDropTable().Model(&prod).Exec(context.Background())
+	db.NewDropTable().Model(&orderHistory).Exec(context.Background())
+	db.NewDropTable().Model(&order).Exec(context.Background())
+
 	db.NewCreateTable().Model(&prod).Exec(context.Background())
 	db.NewCreateTable().Model(&orderHistory).Exec(context.Background())
 	db.NewCreateTable().Model(&order).Exec(context.Background())
