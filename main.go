@@ -33,7 +33,7 @@ func main() {
 	pC := controller.NewProductController(pS)
 
 	oR := repository.NewOrderRepository(db)
-	oS := services.NewOrderService(oR)
+	oS := services.NewOrderService(oR, pR)
 	oC := controller.NewOrderController(oS)
 
 	a := NewApp(fmt.Sprintf(":%s", serverPort), pC, oC)

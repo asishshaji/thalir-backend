@@ -19,16 +19,16 @@ func CreateTables(db *bun.DB, mode string) {
 
 	prod := models.Product{}
 	order := models.Order{}
-	orderHistory := models.OrderHistory{}
+	orderDetail := models.OrderDetail{}
 
 	if mode == enum.Development.String() {
 		db.NewDropTable().Model(&prod).Exec(context.Background())
-		db.NewDropTable().Model(&orderHistory).Exec(context.Background())
+		db.NewDropTable().Model(&orderDetail).Exec(context.Background())
 		db.NewDropTable().Model(&order).Exec(context.Background())
 	}
 
 	db.NewCreateTable().Model(&prod).Exec(context.Background())
-	db.NewCreateTable().Model(&orderHistory).Exec(context.Background())
+	db.NewCreateTable().Model(&orderDetail).Exec(context.Background())
 	db.NewCreateTable().Model(&order).Exec(context.Background())
 
 }

@@ -19,7 +19,7 @@ func NewOrderRepository(db *bun.DB) ORInterface {
 
 func (oR OrderRepository) CreateProduct(o models.Order) (models.Order, error) {
 	oR.db.NewInsert().Model(&o).Exec(context.Background())
-	oR.db.NewInsert().Model(&o.OrderHistory).Exec(context.Background())
+	oR.db.NewInsert().Model(&o.OrderDetails).Exec(context.Background())
 
 	return models.Order{}, nil
 }
