@@ -26,6 +26,12 @@ func NewApp(port string, pController controller.PCInterface, oController control
 	oG := e.Group("/order")
 	oG.POST("", oController.CreateOrder)
 
+	dG := e.Group("/dashboard")
+	dG.GET("", oController.GetDashboardData)
+	dG.GET("/test", oController.GetOrderById)
+
+	dG.GET("/profit/date", oController.GetProfitsBasedOnDateRange)
+
 	return &App{
 		port: port,
 		e:    e,

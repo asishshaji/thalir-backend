@@ -22,14 +22,30 @@ func (oS OrderService) CreateOrder(order models.Order) (models.Order, error) {
 	orderDetails := order.OrderDetails
 
 	for _, elem := range orderDetails {
-		elem.OrderId = order.OrderId
+		elem.OrderId = int(order.ID)
 
-		pI, _ := oS.pR.GetProduct(elem.ProductId)
-		productModel := models.InterfaceToProduct(pI)
+		productModel, _ := oS.pR.GetProduct(elem.ProductId)
 		profit := (productModel.SellPrice - productModel.BuyPrice) * elem.Units
 		elem.Profit = profit
 	}
 
-	oS.oR.CreateProduct(order)
-	return models.Order{}, nil
+	order, err := oS.oR.CreateOrder(order)
+	if err != nil {
+		return models.Order{}, err
+
+	}
+	return order, nil
+}
+
+func (oS OrderService) GetDashboardData() (models.DashboardData, error) {
+
+	return oS.oR.GetDashboardData()
+}
+
+func (oS OrderService) GetProfitsBasedOnDateRange(d1, d2 string) (float32, float32, error) {
+	return oS.oR.GetProfitsBasedOnDateRange(d1, d2)
+}
+
+func (oS OrderService) GetOrder(oId uint) (models.Order, error) {
+	return oS.oR.GetOrder(oId)
 }

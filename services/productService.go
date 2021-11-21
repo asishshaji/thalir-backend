@@ -3,6 +3,7 @@ package services
 import (
 	"log"
 
+	"github.com/asishshaji/thalir-backend/models"
 	repository "github.com/asishshaji/thalir-backend/repositories"
 )
 
@@ -14,7 +15,7 @@ func NewProductService(pRepo repository.PRInterface) PSInterface {
 	return ProductService{pRepo: pRepo}
 }
 
-func (pS ProductService) CreateProduct(product interface{}) (interface{}, error) {
+func (pS ProductService) CreateProduct(product models.Product) (interface{}, error) {
 
 	p, err := pS.pRepo.CreateProduct(product)
 	if err != nil {
@@ -32,7 +33,7 @@ func (pS ProductService) GetAllProducts() (interface{}, error) {
 	return d, nil
 }
 
-func (pS ProductService) UpdateProduct(product interface{}) error {
+func (pS ProductService) UpdateProduct(product models.Product) error {
 	err := pS.pRepo.UpdateProduct(product)
 	if err != nil {
 		return err
@@ -50,7 +51,7 @@ func (pS ProductService) DeleteProduct(pid int) error {
 	return nil
 }
 
-func (pS ProductService) GetProduct(pid int) (interface{}, error) {
+func (pS ProductService) GetProduct(pid int) (models.Product, error) {
 	return pS.pRepo.GetProduct(pid)
 
 }
