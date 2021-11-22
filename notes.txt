@@ -1,3 +1,0 @@
-[] Find profit for the day
-[] Find top customers
-[] Find total sales for past week

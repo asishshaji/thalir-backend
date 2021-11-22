@@ -39,6 +39,8 @@ func ConnectToDB(host, user, password, dbname string, port int) *gorm.DB {
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
+	log.Println(psqlInfo)
+
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  psqlInfo,
 		PreferSimpleProtocol: true,
