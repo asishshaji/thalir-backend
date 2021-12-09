@@ -8,4 +8,5 @@ type ORInterface interface {
 	// GetDashboardDataBasedOnDateRange(d1, d2 string) (float32, float32, error)
 	GetOrder(oId uint) (models.OrderDetails, error)
 	GetOrders() ([]models.OrderDetails, error)
+	GetOrdersByDateRange(startDate, endDate string) ([]models.OrderDetails, error)
 }

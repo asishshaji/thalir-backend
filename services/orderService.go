@@ -58,3 +58,7 @@ func (oS OrderService) GetOrder(oId uint) (models.OrderDetails, error) {
 func (oS OrderService) GetOrders() ([]models.OrderDetails, error) {
 	return oS.oR.GetOrders()
 }
+
+func (oS OrderService) GetOrdersByDateRange(startDate, endDate string) ([]models.OrderDetails, error) {
+	return oS.oR.GetOrdersByDateRange(startDate, endDate)
+}

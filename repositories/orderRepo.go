@@ -50,3 +50,17 @@ func (oR OrderRepository) GetOrders() ([]models.OrderDetails, error) {
 
 	return oM, nil
 }
+
+func (oR OrderRepository) GetOrdersByDateRange(startDate, endDate string) ([]models.OrderDetails, error) {
+	oM := []models.OrderDetails{}
+
+	oR.db.Debug().Model(&models.Order{}).
+		Select("orders.id as order_id", "orders.phone_number", "sum(profit) as profit", "orders.created_at").
+		Joins("Join order_items oi on oi.order_id =  orders.id").
+		Group("orders.id,orders.phone_number").
+		Order("orders.id DESC").
+		Where("oi.created_at >= ? and oi.created_at < ?", startDate, endDate).
+		Find(&oM)
+
+	return oM, nil
+}
