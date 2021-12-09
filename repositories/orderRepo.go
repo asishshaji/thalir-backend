@@ -59,7 +59,7 @@ func (oR OrderRepository) GetOrdersByDateRange(startDate, endDate string) ([]mod
 		Joins("Join order_items oi on oi.order_id =  orders.id").
 		Group("orders.id,orders.phone_number").
 		Order("orders.id DESC").
-		Where("created_at >= ? and created_at < ?", startDate, endDate).
+		Where("oi.created_at >= ? and oi.created_at < ?", startDate, endDate).
 		Find(&oM)
 
 	return oM, nil
