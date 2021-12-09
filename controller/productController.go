@@ -11,18 +11,18 @@ import (
 	"github.com/labstack/echo"
 )
 
-type ProductController struct {
+type productController struct {
 	productService services.PSInterface
 }
 
 func NewProductController(pS services.PSInterface) PCInterface {
-	return ProductController{
+	return productController{
 		productService: pS,
 	}
 }
 
-func (pC ProductController) CreateProduct(c echo.Context) error {
-	reqProduct := models.NewEmptyProductCreationRequest()
+func (pC productController) CreateProduct(c echo.Context) error {
+	reqProduct := models.Product{}
 
 	err := json.NewDecoder(c.Request().Body).Decode(&reqProduct)
 	if err != nil {
@@ -40,7 +40,7 @@ func (pC ProductController) CreateProduct(c echo.Context) error {
 	return c.JSON(http.StatusCreated, p)
 }
 
-func (pC ProductController) GetAllProducts(c echo.Context) error {
+func (pC productController) GetAllProducts(c echo.Context) error {
 	products, err := pC.productService.GetAllProducts()
 	if err != nil {
 		return c.JSON(http.StatusNotFound, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
@@ -50,8 +50,8 @@ func (pC ProductController) GetAllProducts(c echo.Context) error {
 	return c.JSON(http.StatusOK, products)
 }
 
-func (pC ProductController) UpdateProduct(c echo.Context) error {
-	reqProduct := models.NewEmptyProductCreationRequest()
+func (pC productController) UpdateProduct(c echo.Context) error {
+	reqProduct := models.Product{}
 
 	err := json.NewDecoder(c.Request().Body).Decode(&reqProduct)
 	if err != nil {
@@ -66,7 +66,7 @@ func (pC ProductController) UpdateProduct(c echo.Context) error {
 	return c.JSON(http.StatusOK, models.ResponseSuccess{StatusCode: http.StatusOK, Message: "Updated product"})
 }
 
-func (pC ProductController) DeleteProduct(c echo.Context) error {
+func (pC productController) DeleteProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
@@ -78,5 +78,20 @@ func (pC ProductController) DeleteProduct(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
 	}
 	return c.JSON(http.StatusAccepted, models.ResponseSuccess{StatusCode: http.StatusAccepted, Message: "Product deleted"})
+
+}
+
+func (pC productController) GetProduct(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
+
+	}
+	mp, err := pC.productService.GetProduct(id)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, models.ResponseSuccess{StatusCode: http.StatusOK, Message: mp})
 
 }

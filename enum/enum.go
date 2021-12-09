@@ -1,6 +1,23 @@
 package enum
 
 type ProductType int
+type EnvMode int
+
+const (
+	Development EnvMode = iota
+	Production
+)
+
+func (env EnvMode) String() string {
+	switch env {
+	case Development:
+		return "DEV"
+	case Production:
+		return "PROD"
+	default:
+		return "DEV"
+	}
+}
 
 const (
 	Packet ProductType = iota

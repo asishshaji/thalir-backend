@@ -7,4 +7,5 @@ type PCInterface interface {
 	GetAllProducts(c echo.Context) error
 	UpdateProduct(c echo.Context) error
 	DeleteProduct(c echo.Context) error
+	GetProduct(c echo.Context) error
 }

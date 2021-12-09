@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  db:
+    image: postgres
+    container_name: thalir_db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: "asish"
+      POSTGRES_PASSWORD: "kai1253"
+      POSTGRES_DB: "thalir"
+  app:
+    container_name: thalir_api
+    build: .
+    ports:
+      - 9090:9090
+    restart: on-failure
+    env_file: .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      - default
