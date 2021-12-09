@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -56,6 +57,19 @@ func (oC OrderController) GetOrderById(c echo.Context) error {
 func (oC OrderController) GetOrders(c echo.Context) error {
 
 	oM, err := oC.oS.GetOrders()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
+
+	}
+	return c.JSON(http.StatusCreated, models.ResponseSuccess{StatusCode: http.StatusCreated, Message: oM})
+
+}
+
+func (oC OrderController) GetOrdersByDateRange(c echo.Context) error {
+	start_date := c.QueryParam("start_date")
+	end_date := c.QueryParam("end_date")
+	oM, err := oC.oS.GetOrdersByDateRange(start_date, end_date)
+	fmt.Println(err)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
 

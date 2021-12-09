@@ -25,6 +25,7 @@ func NewApp(port string, pController controller.PCInterface, oController control
 
 	oG := e.Group("/order")
 	oG.POST("", oController.CreateOrder)
+	oG.GET("/all", oController.GetOrdersByDateRange)
 	oG.GET("/:id", oController.GetOrderById)
 	oG.GET("", oController.GetOrders)
 
