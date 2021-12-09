@@ -25,6 +25,14 @@ func (pR ProductRepo) CreateProduct(p models.Product) (interface{}, error) {
 		return nil, err
 	}
 
+	pBack := p.ToBackup()
+	err = pR.db.Create(&pBack).Error
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
 	return p, nil
 }
 
@@ -45,6 +53,14 @@ func (pR ProductRepo) UpdateProduct(p models.Product) error {
 		log.Fatalln(err)
 		return err
 	}
+
+	pBack := p.ToBackup()
+	err = pR.db.Create(&pBack).Error
+
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 	return nil
 }
 
@@ -61,7 +77,7 @@ func (pR ProductRepo) GetProduct(pid int) (models.Product, error) {
 	mp := models.Product{}
 	err := pR.db.Model(&models.Product{}).Where("id = ?", pid).Take(&mp).Error
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return models.Product{}, err
 	}
 	return mp, nil

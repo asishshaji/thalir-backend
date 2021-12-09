@@ -2,12 +2,12 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/asishshaji/thalir-backend/models"
 	"github.com/asishshaji/thalir-backend/services"
+	"github.com/kr/pretty"
 	"github.com/labstack/echo"
 )
 
@@ -30,8 +30,6 @@ func (oC OrderController) CreateOrder(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	log.Println(order)
-
 	o, err := oC.oS.CreateOrder(order)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
@@ -42,32 +40,26 @@ func (oC OrderController) CreateOrder(c echo.Context) error {
 
 }
 
-func (oC OrderController) GetDashboardData(c echo.Context) error {
-	mb, err := oC.oS.GetDashboardData()
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
-
-	}
-	return c.JSON(http.StatusOK, models.ResponseSuccess{StatusCode: http.StatusCreated, Message: mb})
-
-}
-
-func (oC OrderController) GetProfitsBasedOnDateRange(c echo.Context) error {
-	d1 := c.QueryParam("start_date")
-	d2 := c.QueryParam("end_date")
-	units, profit, err := oC.oS.GetProfitsBasedOnDateRange(d1, d2)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
-
-	}
-	return c.JSON(http.StatusOK, models.ResponseSuccess{StatusCode: http.StatusCreated, Message: map[string]float32{
-		"profit": profit,
-		"units":  units,
-	}})
-}
-
 func (oC OrderController) GetOrderById(c echo.Context) error {
-	o, _ := oC.oS.GetOrder(1)
-	fmt.Println(o)
-	return nil
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: "error parsing id"})
+	}
+	o, _ := oC.oS.GetOrder(uint(id))
+	pretty.Println(o)
+	return c.JSON(http.StatusOK, models.ResponseSuccess{
+		StatusCode: http.StatusOK,
+		Message:    o,
+	})
+}
+
+func (oC OrderController) GetOrders(c echo.Context) error {
+
+	oM, err := oC.oS.GetOrders()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, models.ResponseError{StatusCode: http.StatusBadRequest, Message: err.Error()})
+
+	}
+	return c.JSON(http.StatusCreated, models.ResponseSuccess{StatusCode: http.StatusCreated, Message: oM})
+
 }

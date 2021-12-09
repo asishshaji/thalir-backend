@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/asishshaji/thalir-backend/models"
 	"gorm.io/gorm"
 )
@@ -19,83 +17,36 @@ func NewOrderRepository(db *gorm.DB) ORInterface {
 
 func (oR OrderRepository) CreateOrder(o models.Order) (models.Order, error) {
 
-	return o, nil
-}
-
-func (oR OrderRepository) GetOrder(oId uint) (models.Order, error) {
-	order := models.Order{}
-	rows, err := oR.db.Table("orders").Joins("Join order_details on order_details.order_id = orders.id").Where("orders.id =? ", oId).Rows()
+	err := oR.db.Create(&o).Error
 	if err != nil {
 		return models.Order{}, err
 	}
-
-	defer rows.Close()
-
-	// for rows.Next(){
-	// 	oD := models.OrderDetail{}
-	// 	o := mode
-	// }
-
-	fmt.Println(order.OrderDetails)
-	return order, nil
+	return o, nil
 }
 
-func (oR OrderRepository) GetDashboardData() (models.DashboardData, error) {
-	// execute raw query
+func (oR OrderRepository) GetOrder(oId uint) (models.OrderDetails, error) {
+	odM := models.OrderDetails{}
 
-	rows, err := oR.db.Table("orders").Joins("Join order_details on order_details.order_id = orders.id").
-		Select("sum(order_details.units)", "sum(order_details.profit)", "avg(order_details.profit)", "avg(order_details.units)").Rows()
+	oR.db.Model(&models.Order{}).
+		Select("product_id", "orders.phone_number", "oi.units", "type").
+		Joins("Join order_items oi on oi.order_id = orders.id").
+		Joins("Join products p on p.id = oi.product_id").
+		Where("orders.id = ? ", oId).
+		Find(&odM)
 
-	if err != nil {
-		return models.DashboardData{}, err
-	}
-
-	defer rows.Close()
-
-	var profit, units, avgProfit, avgUnit, invested_money float32
-	var pCount int64
-
-	for rows.Next() {
-		rows.Scan(&units, &profit, &avgProfit, &avgUnit)
-	}
-
-	rows, err = oR.db.Table("products").Select("count(*)", "sum(products.buy_price*TotalAvailableProducts.units)").Rows()
-	if err != nil {
-		return models.DashboardData{}, err
-	}
-
-	for rows.Next() {
-		rows.Scan(&pCount, &invested_money)
-	}
-
-	mb := models.DashboardData{
-		Profit:                 profit,
-		UnitsSold:              units,
-		AvgProfit:              avgProfit,
-		AvgUnits:               avgUnit,
-		TotalMoneyInvested:     invested_money,
-		TotalAvailableProducts: pCount,
-	}
-
-	return mb, nil
-
+	return odM, nil
 }
 
-func (oR OrderRepository) GetProfitsBasedOnDateRange(d1, d2 string) (float32, float32, error) {
+func (oR OrderRepository) GetOrders() ([]models.OrderDetails, error) {
+	oM := []models.OrderDetails{}
 
-	rows, err := oR.db.Table("orders").Joins("Join order_details on order_details.order_id = orders.id").
-		Select("sum(order_details.units)", "sum(order_details.profit)").Where("orders.created_at BETWEEN ? AND ?", d1, d2).Rows()
-	var profit, units float32
+	oR.db.Debug().Model(&models.Order{}).
+		Select("orders.id as order_id", "orders.phone_number", "sum(profit) as profit", "orders.created_at").
+		Joins("Join order_items oi on oi.order_id =  orders.id").
+		Group("orders.id,orders.phone_number").
+		Order("orders.id DESC").
+		Limit(10).
+		Find(&oM)
 
-	if err != nil {
-		return 0, 0, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		rows.Scan(&units, &profit)
-	}
-
-	return units, profit, nil
+	return oM, nil
 }

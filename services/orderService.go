@@ -1,8 +1,11 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/asishshaji/thalir-backend/models"
 	repository "github.com/asishshaji/thalir-backend/repositories"
+	"github.com/kr/pretty"
 )
 
 type OrderService struct {
@@ -13,39 +16,45 @@ type OrderService struct {
 func NewOrderService(oR repository.ORInterface, pR repository.PRInterface) OServiceInterface {
 	return OrderService{
 		oR: oR,
+		pR: pR,
 	}
 }
 func (oS OrderService) CreateOrder(order models.Order) (models.Order, error) {
-
-	// calculate profit here
-
-	orderDetails := order.OrderDetails
-
-	for _, elem := range orderDetails {
-		elem.OrderId = int(order.ID)
-
-		productModel, _ := oS.pR.GetProduct(elem.ProductId)
-		profit := (productModel.SellPrice - productModel.BuyPrice) * elem.Units
-		elem.Profit = profit
+	orderDetails := order.OrderItems
+	ords := []models.OrderItem{}
+	products := []models.Product{}
+	for _, oD := range orderDetails {
+		p, _ := oS.pR.GetProduct(oD.ProductId)
+		if p.Units < oD.Units {
+			return models.Order{}, errors.New("സ്റ്റോക്ക് ലഭ്യമല്ല : " + p.Name)
+		}
+		profit := oD.Units * (p.SellPrice - p.BuyPrice)
+		oD.Profit = profit
+		oD.BuyingPrice = p.BuyPrice
+		oD.SellingPrice = p.SellPrice
+		ords = append(ords, oD)
+		pretty.Println(p.Units)
+		p.Units = p.Units - oD.Units
+		if p.Units == 0 {
+			p.Units = -100
+		}
+		products = append(products, p)
 	}
 
-	order, err := oS.oR.CreateOrder(order)
-	if err != nil {
-		return models.Order{}, err
+	order.OrderItems = ords
+	oS.oR.CreateOrder(order)
 
+	for _, prod := range products {
+		oS.pR.UpdateProduct(prod)
 	}
+
 	return order, nil
 }
 
-func (oS OrderService) GetDashboardData() (models.DashboardData, error) {
-
-	return oS.oR.GetDashboardData()
-}
-
-func (oS OrderService) GetProfitsBasedOnDateRange(d1, d2 string) (float32, float32, error) {
-	return oS.oR.GetProfitsBasedOnDateRange(d1, d2)
-}
-
-func (oS OrderService) GetOrder(oId uint) (models.Order, error) {
+func (oS OrderService) GetOrder(oId uint) (models.OrderDetails, error) {
 	return oS.oR.GetOrder(oId)
+}
+
+func (oS OrderService) GetOrders() ([]models.OrderDetails, error) {
+	return oS.oR.GetOrders()
 }

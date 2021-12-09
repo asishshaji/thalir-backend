@@ -18,9 +18,10 @@ func CreateTables(db *gorm.DB) {
 
 	prod := models.Product{}
 	order := models.Order{}
-	orderDetail := models.OrderDetail{}
+	orderItem := models.OrderItem{}
+	pB := models.ProductBackup{}
 
-	db.AutoMigrate(&prod, &order, &orderDetail)
+	db.AutoMigrate(&prod, &order, &orderItem, &pB)
 
 }
 

@@ -9,6 +9,7 @@ require (
 	github.com/jcmturner/gokrb5/v8 v8.2.0 // indirect
 	github.com/jinzhu/now v1.1.3 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/labstack/echo v3.3.10+incompatible // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/lib/pq v1.10.4 // indirect

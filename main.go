@@ -23,8 +23,9 @@ func main() {
 	dbPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
 
 	db := utils.ConnectToDB(dbHost, dbUsername, dbPassword, dbName, dbPort)
-
 	utils.CreateTables(db)
+
+	// seed.Load(db)
 
 	pR := repository.NewProductRepo(db)
 	pS := services.NewProductService(pR)
@@ -34,6 +35,10 @@ func main() {
 	oS := services.NewOrderService(oR, pR)
 	oC := controller.NewOrderController(oS)
 
-	a := NewApp(fmt.Sprintf(":%s", serverPort), pC, oC)
+	dR := repository.NewDashboardRepo(db)
+	dS := services.NewDashboardService(dR)
+	dC := controller.NewDashboardController(dS)
+
+	a := NewApp(fmt.Sprintf(":%s", serverPort), pC, oC, dC)
 	a.RunServer()
 }
