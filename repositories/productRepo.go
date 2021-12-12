@@ -47,20 +47,26 @@ func (pR ProductRepo) GetAllProducts() (interface{}, error) {
 }
 
 func (pR ProductRepo) UpdateProduct(p models.Product) error {
-
-	err := pR.db.Model(&models.Product{}).Where("id = ?", p.ID).Updates(p).Error
+	err := pR.db.Debug().Model(&models.Product{}).Where("id = ?", p.ID).Updates(map[string]interface{}{
+		"id":         p.ID,
+		"name":       p.Name,
+		"type":       p.Type,
+		"buy_price":  p.BuyPrice,
+		"sell_price": p.SellPrice,
+		"units":      p.Units,
+	}).Error
 	if err != nil {
 		log.Fatalln(err)
 		return err
 	}
 
-	pBack := p.ToBackup()
-	err = pR.db.Create(&pBack).Error
+	// pBack := p.ToBackup()
+	// err = pR.db.Create(&pBack).Error
 
-	if err != nil {
-		log.Println(err)
-		return err
-	}
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return err
+	// }
 	return nil
 }
 

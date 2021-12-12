@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/asishshaji/thalir-backend/models"
 	repository "github.com/asishshaji/thalir-backend/repositories"
@@ -36,8 +37,9 @@ func (oS OrderService) CreateOrder(order models.Order) (models.Order, error) {
 		pretty.Println(p.Units)
 		p.Units = p.Units - oD.Units
 		if p.Units == 0 {
-			p.Units = -100
+			p.Units = 0.0
 		}
+
 		products = append(products, p)
 	}
 
@@ -46,6 +48,7 @@ func (oS OrderService) CreateOrder(order models.Order) (models.Order, error) {
 
 	for _, prod := range products {
 		oS.pR.UpdateProduct(prod)
+		fmt.Println(prod)
 	}
 
 	return order, nil
