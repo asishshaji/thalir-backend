@@ -24,11 +24,11 @@ func (oR OrderRepository) CreateOrder(o models.Order) (models.Order, error) {
 	return o, nil
 }
 
-func (oR OrderRepository) GetOrder(oId uint) (models.OrderDetails, error) {
-	odM := models.OrderDetails{}
+func (oR OrderRepository) GetOrder(oId uint) ([]models.OrderItemDisplay, error) {
+	odM := []models.OrderItemDisplay{}
 
-	oR.db.Model(&models.Order{}).
-		Select("product_id", "orders.phone_number", "oi.units", "type").
+	oR.db.Debug().Model(&models.Order{}).
+		Select("p.name as product_name", "oi.units as units_bought", "oi.selling_price as price", "oi.profit as profit").
 		Joins("Join order_items oi on oi.order_id = orders.id").
 		Joins("Join products p on p.id = oi.product_id").
 		Where("orders.id = ? ", oId).

@@ -92,3 +92,10 @@ type OrderDetails struct {
 	Profit      float32   `json:"profit"`
 	CreatedAt   time.Time `json:"created_at"`
 }
+
+type OrderItemDisplay struct {
+	ProductName string `json:"product_name"`
+	UnitsBought string `json:"units_bought"`
+	Price       string `json:"cost"`
+	Profit      string `json:"profit"`
+}

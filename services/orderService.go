@@ -51,7 +51,7 @@ func (oS OrderService) CreateOrder(order models.Order) (models.Order, error) {
 	return order, nil
 }
 
-func (oS OrderService) GetOrder(oId uint) (models.OrderDetails, error) {
+func (oS OrderService) GetOrder(oId uint) ([]models.OrderItemDisplay, error) {
 	return oS.oR.GetOrder(oId)
 }
 
